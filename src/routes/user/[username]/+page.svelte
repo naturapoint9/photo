@@ -1,8 +1,10 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
+	import { enhance } from '$app/forms';
+	import { timeAgo } from '$lib/utils';
 
-	let { data }: { data: PageData } = $props();
-	let tab: 'gallery' | 'favorites' = $state('gallery');
+	let { data, form }: { data: PageData; form: ActionData } = $props();
+	let tab: 'gallery' | 'favorites' | 'shoutbox' = $state('gallery');
 
 	function memberSince(dateStr: string) {
 		return new Date(dateStr).toLocaleDateString('en-US', {
@@ -64,6 +66,9 @@
 		<button class="profile-tab" class:active={tab === 'favorites'} onclick={() => tab = 'favorites'}>
 			favorites ({data.favorites.length})
 		</button>
+		<button class="profile-tab" class:active={tab === 'shoutbox'} onclick={() => tab = 'shoutbox'}>
+			shoutbox ({data.shoutbox.length})
+		</button>
 	</div>
 
 	{#if tab === 'gallery'}
@@ -86,7 +91,7 @@
 				{/each}
 			</div>
 		{/if}
-	{:else}
+	{:else if tab === 'favorites'}
 		{#if data.favorites.length === 0}
 			<p class="empty">no favorites yet.</p>
 		{:else}
@@ -106,5 +111,36 @@
 				{/each}
 			</div>
 		{/if}
+	{:else}
+		<div class="shoutbox">
+			{#if data.session}
+				<form method="POST" action="?/shout" use:enhance class="shoutbox-form">
+					<textarea name="body" placeholder="leave a message..." required></textarea>
+					{#if form?.error}
+						<p class="error">{form.error}</p>
+					{/if}
+					<button type="submit">shout -&gt;</button>
+				</form>
+			{:else}
+				<p class="empty"><a href="/login">log in</a> to leave a message</p>
+			{/if}
+
+			<div class="shoutbox-list">
+				{#each data.shoutbox as shout}
+					{@const author = Array.isArray(shout.profiles) ? shout.profiles[0] : shout.profiles}
+					<div class="shoutbox-item">
+						<div class="shoutbox-header">
+							<a href="/user/{author?.username ?? 'unknown'}" class="author">{author?.username ?? 'unknown'}</a>
+							<span class="date" title={new Date(shout.created_at).toLocaleString()}>{timeAgo(shout.created_at)}</span>
+						</div>
+						<div class="shoutbox-body">{shout.body}</div>
+					</div>
+				{/each}
+			</div>
+
+			{#if data.shoutbox.length === 0}
+				<p class="empty">no messages yet.</p>
+			{/if}
+		</div>
 	{/if}
 </div>

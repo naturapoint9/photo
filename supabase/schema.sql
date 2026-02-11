@@ -146,6 +146,26 @@ create policy "Authenticated users can comment"
 create policy "Users can delete own comments"
   on public.comments for delete using (auth.uid() = user_id);
 
+-- ---------- shoutbox ----------
+create table if not exists public.shoutbox (
+  id         uuid primary key default gen_random_uuid(),
+  profile_id uuid not null references public.profiles(id) on delete cascade,
+  user_id    uuid not null references public.profiles(id) on delete cascade,
+  body       text not null,
+  created_at timestamptz default now()
+);
+
+alter table public.shoutbox enable row level security;
+
+create policy "Anyone can view shoutbox"
+  on public.shoutbox for select using (true);
+
+create policy "Authenticated users can shout"
+  on public.shoutbox for insert with check (auth.uid() = user_id);
+
+create policy "Users can delete own shout or profile owner can delete"
+  on public.shoutbox for delete using (auth.uid() = user_id or auth.uid() = profile_id);
+
 -- ---------- storage ----------
 insert into storage.buckets (id, name, public)
 values ('photos', 'photos', true)
@@ -193,3 +213,4 @@ create index if not exists idx_photos_created_at on public.photos(created_at des
 create index if not exists idx_comments_photo_id on public.comments(photo_id);
 create index if not exists idx_likes_photo_id on public.likes(photo_id);
 create index if not exists idx_photo_tags_tag_id on public.photo_tags(tag_id);
+create index if not exists idx_shoutbox_profile_id on public.shoutbox(profile_id);

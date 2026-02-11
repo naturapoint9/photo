@@ -8,6 +8,10 @@
 	<title>#{data.tag.name} — 36and8</title>
 	<meta property="og:title" content="#{data.tag.name}" />
 	<meta property="og:description" content="{data.photos.length} photo{data.photos.length === 1 ? '' : 's'} tagged #{data.tag.name}" />
+	<meta property="og:url" content={data.canonicalUrl} />
+	{#if data.photos.length > 0}
+		<meta property="og:image" content={data.photos[0].image_url} />
+	{/if}
 </svelte:head>
 
 <div class="container">

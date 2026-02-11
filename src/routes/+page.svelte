@@ -88,6 +88,10 @@
 	<title>{activeFilters.length > 0 ? `${activeFilters.join(' + ')} — 36and8` : '36and8 — analog photo sharing'}</title>
 	<meta property="og:title" content={activeFilters.length > 0 ? `${activeFilters.join(' + ')} — 36and8` : '36and8'} />
 	<meta property="og:description" content="analog photo sharing" />
+	<meta property="og:url" content={data.canonicalUrl} />
+	{#if data.photos.length > 0}
+		<meta property="og:image" content={data.photos[0].image_url} />
+	{/if}
 </svelte:head>
 
 <div class="container">

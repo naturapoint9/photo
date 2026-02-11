@@ -21,8 +21,11 @@
 	<title>{data.profile.username} — 36and8</title>
 	<meta property="og:title" content={data.profile.username} />
 	<meta property="og:description" content={data.profile.bio || `${data.photoCount} photo${data.photoCount === 1 ? '' : 's'} on 36and8`} />
+	<meta property="og:url" content={data.canonicalUrl} />
 	{#if data.profile.avatar_url}
 		<meta property="og:image" content={data.profile.avatar_url} />
+	{:else if data.photos.length > 0}
+		<meta property="og:image" content={data.photos[0].image_url} />
 	{/if}
 </svelte:head>
 

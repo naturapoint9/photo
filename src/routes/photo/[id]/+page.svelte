@@ -64,9 +64,11 @@
 	<meta property="og:title" content={data.photo.caption || 'photo'} />
 	<meta property="og:description" content={[data.photo.profiles?.username, data.photo.camera, data.photo.film_stock].filter(Boolean).join(' · ') || '36and8'} />
 	<meta property="og:image" content={data.photo.image_url} />
+	<meta property="og:url" content={data.canonicalUrl} />
 	<meta property="og:type" content="article" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={data.photo.caption || 'photo'} />
+	<meta name="twitter:description" content={[data.photo.profiles?.username, data.photo.camera, data.photo.film_stock].filter(Boolean).join(' · ') || '36and8'} />
 	<meta name="twitter:image" content={data.photo.image_url} />
 </svelte:head>
 

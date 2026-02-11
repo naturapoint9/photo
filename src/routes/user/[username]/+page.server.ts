@@ -23,9 +23,19 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.select('*', { count: 'exact', head: true })
 		.eq('user_id', profile.id);
 
+	// fetch photos this user has favorited
+	const { data: favRows } = await locals.supabase
+		.from('likes')
+		.select('photo_id, photos ( id, image_url, caption, film_stock, created_at, profiles!photos_user_id_fkey ( username ) )')
+		.eq('user_id', profile.id)
+		.order('created_at', { ascending: false });
+
+	const favorites = (favRows ?? []).map((r: any) => r.photos).filter(Boolean);
+
 	return {
 		profile,
 		photos: photos ?? [],
-		photoCount: photoCount ?? 0
+		photoCount: photoCount ?? 0,
+		favorites
 	};
 };

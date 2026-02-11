@@ -575,6 +575,36 @@ nav.top-nav .upload-btn:hover {
 	color: var(--fg-muted);
 }
 
+.profile-tabs {
+	display: flex;
+	gap: 0;
+	border-bottom: 1px solid var(--border);
+	margin-bottom: 1.5rem;
+}
+
+.profile-tab {
+	font-family: var(--font-mono);
+	font-size: 0.85rem;
+	font-weight: 500;
+	padding: 0.6rem 1rem;
+	border: none;
+	background: none;
+	color: var(--fg-muted);
+	cursor: pointer;
+	border-bottom: 2px solid transparent;
+	margin-bottom: -1px;
+	transition: all 0.15s;
+}
+
+.profile-tab:hover {
+	color: var(--fg);
+}
+
+.profile-tab.active {
+	color: var(--fg);
+	border-bottom-color: var(--fg);
+}
+
 /* ---------- social fields in settings ---------- */
 
 .social-fields {

@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+	let tab: 'gallery' | 'favorites' = $state('gallery');
 
 	function memberSince(dateStr: string) {
 		return new Date(dateStr).toLocaleDateString('en-US', {
@@ -56,23 +57,54 @@
 		{/if}
 	</div>
 
-	{#if data.photos.length === 0}
-		<p class="empty">no photos yet.</p>
+	<div class="profile-tabs">
+		<button class="profile-tab" class:active={tab === 'gallery'} onclick={() => tab = 'gallery'}>
+			gallery ({data.photoCount})
+		</button>
+		<button class="profile-tab" class:active={tab === 'favorites'} onclick={() => tab = 'favorites'}>
+			favorites ({data.favorites.length})
+		</button>
+	</div>
+
+	{#if tab === 'gallery'}
+		{#if data.photos.length === 0}
+			<p class="empty">no photos yet.</p>
+		{:else}
+			<div class="photo-grid">
+				{#each data.photos as photo}
+					<a href="/photo/{photo.id}" class="photo-card" style="text-decoration: none;">
+						<img src={photo.image_url} alt={photo.caption || 'photo'} loading="lazy" />
+						<div class="card-info">
+							{#if photo.caption}
+								<div class="caption">{photo.caption}</div>
+							{/if}
+							{#if photo.film_stock}
+								<div class="meta">{photo.film_stock}</div>
+							{/if}
+						</div>
+					</a>
+				{/each}
+			</div>
+		{/if}
 	{:else}
-		<div class="photo-grid">
-			{#each data.photos as photo}
-				<a href="/photo/{photo.id}" class="photo-card" style="text-decoration: none;">
-					<img src={photo.image_url} alt={photo.caption || 'photo'} loading="lazy" />
-					<div class="card-info">
-						{#if photo.caption}
-							<div class="caption">{photo.caption}</div>
-						{/if}
-						{#if photo.film_stock}
-							<div class="meta">{photo.film_stock}</div>
-						{/if}
-					</div>
-				</a>
-			{/each}
-		</div>
+		{#if data.favorites.length === 0}
+			<p class="empty">no favorites yet.</p>
+		{:else}
+			<div class="photo-grid">
+				{#each data.favorites as photo}
+					<a href="/photo/{photo.id}" class="photo-card" style="text-decoration: none;">
+						<img src={photo.image_url} alt={photo.caption || 'photo'} loading="lazy" />
+						<div class="card-info">
+							{#if photo.caption}
+								<div class="caption">{photo.caption}</div>
+							{/if}
+							{#if photo.profiles?.username}
+								<div class="meta">{photo.profiles.username}</div>
+							{/if}
+						</div>
+					</a>
+				{/each}
+			</div>
+		{/if}
 	{/if}
 </div>

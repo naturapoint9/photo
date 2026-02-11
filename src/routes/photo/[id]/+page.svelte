@@ -137,15 +137,15 @@
 	{/if}
 
 	<div class="actions-bar">
-		<form method="POST" action="?/like" use:enhance>
-			<button type="submit" class="like-btn" class:liked={data.userLiked}>
-				{data.userLiked ? '♥' : '♡'} {data.likeCount}
+		<form method="POST" action="?/favorite" use:enhance>
+			<button type="submit" class="like-btn" class:liked={data.userFavorited}>
+				{data.userFavorited ? '★' : '☆'} {data.favoriteCount}
 			</button>
 		</form>
 
-		{#if data.likes.length > 0}
+		{#if data.favorites.length > 0}
 			<span class="liked-by">
-				{#each data.likes as like, i}<a href="/user/{like.profiles?.username}">{like.profiles?.username}</a>{#if i < data.likes.length - 1}, {/if}{/each}
+				{#each data.favorites as fav, i}<a href="/user/{fav.profiles?.username}">{fav.profiles?.username}</a>{#if i < data.favorites.length - 1}, {/if}{/each}
 			</span>
 		{/if}
 

@@ -35,22 +35,22 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.eq('photo_id', params.id)
 		.order('created_at', { ascending: true });
 
-	const { data: likes } = await locals.supabase
+	const { data: favorites } = await locals.supabase
 		.from('likes')
 		.select('user_id, profiles!likes_user_id_fkey ( username )')
 		.eq('photo_id', params.id);
 
 	const { session } = await locals.safeGetSession();
-	const userLiked = session?.user
-		? (likes ?? []).some((l: any) => l.user_id === session.user!.id)
+	const userFavorited = session?.user
+		? (favorites ?? []).some((l: any) => l.user_id === session.user!.id)
 		: false;
 
 	return {
 		photo,
 		comments: comments ?? [],
-		likes: likes ?? [],
-		likeCount: (likes ?? []).length,
-		userLiked
+		favorites: favorites ?? [],
+		favoriteCount: (favorites ?? []).length,
+		userFavorited
 	};
 };
 
@@ -73,7 +73,7 @@ export const actions: Actions = {
 		return { success: true };
 	},
 
-	like: async ({ locals, params }) => {
+	favorite: async ({ locals, params }) => {
 		const { session } = await locals.safeGetSession();
 		if (!session?.user) return { error: 'must be logged in' };
 

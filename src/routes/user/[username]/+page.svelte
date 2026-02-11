@@ -2,9 +2,12 @@
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { timeAgo } from '$lib/utils';
+	import { page } from '$app/stores';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
-	let tab: 'submissions' | 'favorites' | 'shoutbox' = $state('submissions');
+	let tab: 'submissions' | 'favorites' | 'shoutbox' = $state(
+		(page.url.searchParams.get('tab') as 'submissions' | 'favorites' | 'shoutbox') || 'submissions'
+	);
 
 	function memberSince(dateStr: string) {
 		return new Date(dateStr).toLocaleDateString('en-US', {

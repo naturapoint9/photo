@@ -1,8 +1,18 @@
 import { createServerClient } from '@supabase/ssr';
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
-import type { Handle } from '@sveltejs/kit';
+import type { Handle, HandleServerError } from '@sveltejs/kit';
+
+export const handleError: HandleServerError = async ({ error }) => {
+	console.error('Server error:', error);
+	return { message: 'Something went wrong' };
+};
 
 export const handle: Handle = async ({ event, resolve }) => {
+	if (!PUBLIC_SUPABASE_URL || !PUBLIC_SUPABASE_ANON_KEY) {
+		console.error('Missing Supabase env vars: PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY');
+		throw new Error('Supabase not configured. Set PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY.');
+	}
+
 	event.locals.supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
 		cookies: {
 			getAll: () => event.cookies.getAll(),

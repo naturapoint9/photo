@@ -7,9 +7,10 @@
 	let { data, children }: { data: LayoutData; children: any } = $props();
 
 	onMount(() => {
+		if (!data.supabase) return;
 		const {
 			data: { subscription }
-		} = data.supabase!.auth.onAuthStateChange((_event: string, _session: unknown) => {
+		} = data.supabase.auth.onAuthStateChange((_event: string, _session: unknown) => {
 			invalidate('supabase:auth');
 		});
 
@@ -17,7 +18,8 @@
 	});
 
 	async function handleLogout() {
-		await data.supabase!.auth.signOut();
+		if (!data.supabase) return;
+		await data.supabase.auth.signOut();
 		invalidate('supabase:auth');
 	}
 </script>

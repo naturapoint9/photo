@@ -170,9 +170,13 @@ button.text-btn:hover {
 /* ---------- nav ---------- */
 
 nav.top-nav {
+	position: relative;
+	z-index: 10000;
+	pointer-events: auto;
 	border-bottom: 1px solid var(--border);
 	padding: 1rem 0;
 	margin-bottom: 2rem;
+	background: var(--bg);
 }
 
 nav.top-nav .nav-inner {
@@ -302,6 +306,8 @@ nav.top-nav .upload-btn:hover {
 }
 
 .photo-detail .photo-main {
+	position: relative;
+	z-index: 0;
 	margin: -2rem -1.5rem 1.5rem;
 	padding: 2rem 1.5rem;
 	display: flex;

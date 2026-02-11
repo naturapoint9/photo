@@ -1,5 +1,5 @@
 -- ============================================================
--- 8AND36 -- analog photo sharing
+-- 36AND8 -- analog photo sharing
 -- Run this in the Supabase SQL Editor (or via psql)
 -- ============================================================
 

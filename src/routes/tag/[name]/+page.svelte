@@ -5,7 +5,9 @@
 </script>
 
 <svelte:head>
-	<title>#{data.tag.name} — 8and36</title>
+	<title>#{data.tag.name} — 36and8</title>
+	<meta property="og:title" content="#{data.tag.name}" />
+	<meta property="og:description" content="{data.photos.length} photo{data.photos.length === 1 ? '' : 's'} tagged #{data.tag.name}" />
 </svelte:head>
 
 <div class="container">

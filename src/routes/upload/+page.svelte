@@ -192,7 +192,7 @@
 </script>
 
 <svelte:head>
-	<title>upload — 8and36</title>
+	<title>upload — 36and8</title>
 </svelte:head>
 
 <div class="upload-page">

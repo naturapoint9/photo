@@ -85,7 +85,9 @@
 </script>
 
 <svelte:head>
-	<title>{activeFilters.length > 0 ? `${activeFilters.join(' + ')} — 8and36` : '8and36 — analog photo sharing'}</title>
+	<title>{activeFilters.length > 0 ? `${activeFilters.join(' + ')} — 36and8` : '36and8 — analog photo sharing'}</title>
+	<meta property="og:title" content={activeFilters.length > 0 ? `${activeFilters.join(' + ')} — 36and8` : '36and8'} />
+	<meta property="og:description" content="analog photo sharing" />
 </svelte:head>
 
 <div class="container">

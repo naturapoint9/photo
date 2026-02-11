@@ -47,7 +47,7 @@
 </script>
 
 <svelte:head>
-	<title>sign up — 8and36</title>
+	<title>sign up — 36and8</title>
 </svelte:head>
 
 <div class="auth-page">

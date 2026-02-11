@@ -24,7 +24,7 @@
 
 <nav class="top-nav">
 	<div class="nav-inner">
-		<a href="/" class="site-name">8and36</a>
+		<a href="/" class="site-name">36and8</a>
 		<div class="nav-links">
 			{#if data.session}
 				<a href="/user/{data.profile?.username ?? ''}">{data.profile?.username ?? 'me'}</a>

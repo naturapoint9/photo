@@ -12,7 +12,12 @@
 </script>
 
 <svelte:head>
-	<title>{data.profile.username} — 8and36</title>
+	<title>{data.profile.username} — 36and8</title>
+	<meta property="og:title" content={data.profile.username} />
+	<meta property="og:description" content={data.profile.bio || `${data.photoCount} photo${data.photoCount === 1 ? '' : 's'} on 36and8`} />
+	{#if data.profile.avatar_url}
+		<meta property="og:image" content={data.profile.avatar_url} />
+	{/if}
 </svelte:head>
 
 <div class="container">

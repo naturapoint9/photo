@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>all tags — 8and36</title>
+	<title>all tags — 36and8</title>
 </svelte:head>
 
 <div class="container">

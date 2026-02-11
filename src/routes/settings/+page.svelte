@@ -16,7 +16,7 @@
 </script>
 
 <svelte:head>
-	<title>settings — 8and36</title>
+	<title>settings — 36and8</title>
 </svelte:head>
 
 <div class="auth-page">

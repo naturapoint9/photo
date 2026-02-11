@@ -1,4 +1,4 @@
-# grain
+# 36and8
 
 A simple, unbloated photo sharing site for analog photography.  
 Built with SvelteKit + Supabase. DIY aesthetic — text-first, photos-second.
@@ -7,7 +7,7 @@ Built with SvelteKit + Supabase. DIY aesthetic — text-first, photos-second.
 
 ### 1. Supabase
 
-Create a [Supabase](https://supabase.com) project, then run the contents of `supabase/schema.sql` in the SQL Editor. This creates all tables, row-level security policies, the storage bucket, and the auth trigger.
+Create a [Supabase](https://supabase.com) project, then run the contents of `supabase/schema.sql` in the SQL Editor. This creates all tables, row-level security policies, storage buckets (photos, avatars), and the auth trigger.
 
 ### 2. Environment
 
@@ -35,12 +35,30 @@ Open [http://localhost:5173](http://localhost:5173).
 
 ## Features
 
-- **Upload** analog photos with metadata (camera, film stock, lens)
+- **Upload** analog photos with metadata (camera, film stock, lens, format)
 - **Tag** photos (comma-separated, e.g. `street, 35mm, portra`)
-- **Like** and **comment** on photos
-- **User profiles** with photo grids
-- **Browse by tag**
+- **Favorite** and **critique** photos
+- **User profiles** with tabs: Submissions, Favorites, Shoutbox (guestbook)
+- **Profile settings** — bio, avatar, social links (YouTube, Instagram, TikTok)
+- **Browse by tag** or filter feed by format (35mm / 120)
+- **OG metadata** for sharing
 - Email/password auth via Supabase
+
+## Deployment (Vercel)
+
+Deploy to production:
+
+```sh
+npm run deploy
+```
+
+Or, if npm has issues:
+
+```sh
+./node_modules/.bin/vercel --prod
+```
+
+Set `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` in your Vercel project environment variables.
 
 ## Stack
 
@@ -57,12 +75,13 @@ src/
     login/                # sign in
     signup/               # create account
     upload/               # upload a photo
-    photo/[id]/           # photo detail, comments, likes
-    user/[username]/      # user profile + grid
+    settings/             # profile, avatar, social links
+    photo/[id]/           # photo detail, critiques, favorites
+    user/[username]/      # user profile (submissions, favorites, shoutbox)
     tag/[name]/           # photos by tag
+    tags/                 # all tags
+    api/photos/           # infinite scroll endpoint
     auth/callback/        # OAuth callback
-  lib/
-    supabase.ts           # env re-exports
   hooks.server.ts         # Supabase session management
   app.css                 # global styles
 supabase/

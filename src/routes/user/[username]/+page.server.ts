@@ -24,31 +24,35 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.eq('user_id', profile.id);
 
 	// fetch photos this user has favorited
-	const { data: favRows } = await locals.supabase
+	let favorites: any[] = [];
+	const { data: favRows, error: favErr } = await locals.supabase
 		.from('likes')
-		.select('photo_id, photos ( id, image_url, caption, film_stock, created_at, profiles!photos_user_id_fkey ( username ) )')
+		.select('photo_id, photos ( id, image_url, caption, film_stock, created_at, profiles ( username ) )')
 		.eq('user_id', profile.id)
 		.order('created_at', { ascending: false });
 
-	const favorites = (favRows ?? []).map((r: any) => r.photos).filter(Boolean);
+	if (!favErr) {
+		favorites = (favRows ?? []).map((r: any) => r.photos).filter(Boolean);
+	}
 
-	const { data: shoutbox } = await locals.supabase
+	// fetch shoutbox messages
+	let shoutbox: any[] = [];
+	const { data: shoutboxData, error: shoutErr } = await locals.supabase
 		.from('shoutbox')
-		.select(`
-			id,
-			body,
-			created_at,
-			profiles!shoutbox_user_id_fkey ( username )
-		`)
+		.select('id, body, created_at, profiles!shoutbox_user_id_fkey ( username )')
 		.eq('profile_id', profile.id)
 		.order('created_at', { ascending: true });
+
+	if (!shoutErr) {
+		shoutbox = shoutboxData ?? [];
+	}
 
 	return {
 		profile,
 		photos: photos ?? [],
 		photoCount: photoCount ?? 0,
 		favorites,
-		shoutbox: shoutbox ?? []
+		shoutbox
 	};
 };
 

@@ -160,7 +160,7 @@
 	</div>
 
 	<div class="comments-section">
-		<h2>comments ({data.comments.length})</h2>
+		<h2>critiques ({data.comments.length})</h2>
 
 		{#each data.comments as comment}
 			<div class="comment">
@@ -178,11 +178,11 @@
 				{#if form?.error}
 					<p class="error">{form.error}</p>
 				{/if}
-				<button type="submit">post comment -&gt;</button>
+				<button type="submit">post critique -&gt;</button>
 			</form>
 		{:else}
 			<p style="font-size: 0.8rem; color: var(--fg-muted); margin-top: 1rem;">
-				<a href="/login">log in</a> to leave a comment
+				<a href="/login">log in</a> to leave a critique
 			</p>
 		{/if}
 	</div>

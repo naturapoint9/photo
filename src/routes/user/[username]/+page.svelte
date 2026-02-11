@@ -6,7 +6,7 @@
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	let tab: 'submissions' | 'favorites' | 'shoutbox' = $state(
-		(page.url.searchParams.get('tab') as 'submissions' | 'favorites' | 'shoutbox') || 'submissions'
+		($page?.url?.searchParams?.get('tab') as 'submissions' | 'favorites' | 'shoutbox') || 'submissions'
 	);
 
 	function memberSince(dateStr: string) {

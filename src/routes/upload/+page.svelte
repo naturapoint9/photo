@@ -106,6 +106,34 @@
 			error = 'you must be logged in';
 			return;
 		}
+		if (!caption.trim()) {
+			error = 'caption is required';
+			return;
+		}
+		if (!camera.trim()) {
+			error = 'camera is required';
+			return;
+		}
+		if (!filmStock.trim()) {
+			error = 'film stock is required';
+			return;
+		}
+		if (!lens.trim()) {
+			error = 'lens is required';
+			return;
+		}
+		if (!format) {
+			error = 'format is required';
+			return;
+		}
+		const tagNames = tagsInput
+			.split(',')
+			.map((t) => t.trim().toLowerCase().replace(/^#/, ''))
+			.filter((t) => t.length > 0);
+		if (tagNames.length === 0) {
+			error = 'at least one tag is required';
+			return;
+		}
 
 		loading = true;
 		error = '';
@@ -150,37 +178,30 @@
 
 			if (insertErr) throw insertErr;
 
-			const tagNames = tagsInput
-				.split(',')
-				.map((t) => t.trim().toLowerCase().replace(/^#/, ''))
-				.filter((t) => t.length > 0);
+			for (const name of tagNames) {
+				const { data: existingTag } = await supabase
+					.from('tags')
+					.select('id')
+					.eq('name', name)
+					.single();
 
-			if (tagNames.length > 0) {
-				for (const name of tagNames) {
-					const { data: existingTag } = await supabase
+				let tagId: number;
+				if (existingTag) {
+					tagId = existingTag.id;
+				} else {
+					const { data: newTag, error: tagErr } = await supabase
 						.from('tags')
+						.insert({ name })
 						.select('id')
-						.eq('name', name)
 						.single();
-
-					let tagId: number;
-					if (existingTag) {
-						tagId = existingTag.id;
-					} else {
-						const { data: newTag, error: tagErr } = await supabase
-							.from('tags')
-							.insert({ name })
-							.select('id')
-							.single();
-						if (tagErr) continue;
-						tagId = newTag.id;
-					}
-
-					await supabase.from('photo_tags').insert({
-						photo_id: photo.id,
-						tag_id: tagId
-					});
+					if (tagErr) continue;
+					tagId = newTag.id;
 				}
+
+				await supabase.from('photo_tags').insert({
+					photo_id: photo.id,
+					tag_id: tagId
+				});
 			}
 
 			goto(`/photo/${photo.id}`);
@@ -222,12 +243,12 @@
 
 		<label>
 			caption
-			<textarea bind:value={caption} placeholder="caption"></textarea>
+			<textarea bind:value={caption} placeholder="caption" required></textarea>
 		</label>
 
 		<label>
 			camera
-			<input type="text" bind:value={camera} placeholder="e.g. Canon AE-1" list="cameras-list" />
+			<input type="text" bind:value={camera} placeholder="e.g. Canon AE-1" list="cameras-list" required />
 			<datalist id="cameras-list">
 				{#each data.cameras as cam}
 					<option value={cam} />
@@ -237,7 +258,7 @@
 
 		<label>
 			film stock
-			<input type="text" bind:value={filmStock} placeholder="e.g. Portra 400" list="films-list" />
+			<input type="text" bind:value={filmStock} placeholder="e.g. Portra 400" list="films-list" required />
 			<datalist id="films-list">
 				{#each data.films as film}
 					<option value={film} />
@@ -247,7 +268,7 @@
 
 		<label>
 			lens
-			<input type="text" bind:value={lens} placeholder="e.g. 50mm f/1.4" list="lenses-list" />
+			<input type="text" bind:value={lens} placeholder="e.g. 50mm f/1.4" list="lenses-list" required />
 			<datalist id="lenses-list">
 				{#each data.lenses as l}
 					<option value={l} />
@@ -257,7 +278,7 @@
 
 		<label>
 			format
-			<select bind:value={format}>
+			<select bind:value={format} required>
 				<option value="">—</option>
 				<option value="35mm">35mm</option>
 				<option value="120">120</option>
@@ -266,7 +287,7 @@
 
 		<label>
 			tags
-			<input type="text" bind:value={tagsInput} placeholder="comma separated: street, portrait" />
+			<input type="text" bind:value={tagsInput} placeholder="comma separated: street, portrait" required />
 		</label>
 
 		{#if error}

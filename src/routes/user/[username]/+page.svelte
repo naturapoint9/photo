@@ -4,7 +4,7 @@
 	import { timeAgo } from '$lib/utils';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
-	let tab: 'gallery' | 'favorites' | 'shoutbox' = $state('gallery');
+	let tab: 'submissions' | 'favorites' | 'shoutbox' = $state('submissions');
 
 	function memberSince(dateStr: string) {
 		return new Date(dateStr).toLocaleDateString('en-US', {
@@ -60,8 +60,8 @@
 	</div>
 
 	<div class="profile-tabs">
-		<button class="profile-tab" class:active={tab === 'gallery'} onclick={() => tab = 'gallery'}>
-			gallery ({data.photoCount})
+		<button class="profile-tab" class:active={tab === 'submissions'} onclick={() => tab = 'submissions'}>
+			submissions ({data.photoCount})
 		</button>
 		<button class="profile-tab" class:active={tab === 'favorites'} onclick={() => tab = 'favorites'}>
 			favorites ({data.favorites.length})
@@ -71,7 +71,7 @@
 		</button>
 	</div>
 
-	{#if tab === 'gallery'}
+	{#if tab === 'submissions'}
 		{#if data.photos.length === 0}
 			<p class="empty">no photos yet.</p>
 		{:else}

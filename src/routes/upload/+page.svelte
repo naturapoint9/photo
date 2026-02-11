@@ -15,7 +15,7 @@
 	let lens = $state(data.lastLens ?? '');
 	let format = $state(data.lastFormat ?? '');
 	let tagsInput = $state('');
-	let error = $state('');
+	let errorMsg = $state('');
 	let loading = $state(false);
 	let status = $state('');
 	let fileInfo = $state('');
@@ -99,31 +99,31 @@
 	async function handleSubmit(e: Event) {
 		e.preventDefault();
 		if (!file) {
-			error = 'please select a photo';
+			errorMsg = 'please select a photo';
 			return;
 		}
 		if (!data.session || !data.user) {
-			error = 'you must be logged in';
+			errorMsg = 'you must be logged in';
 			return;
 		}
 		if (!caption.trim()) {
-			error = 'caption is required';
+			errorMsg = 'caption is required';
 			return;
 		}
 		if (!camera.trim()) {
-			error = 'camera is required';
+			errorMsg = 'camera is required';
 			return;
 		}
 		if (!filmStock.trim()) {
-			error = 'film stock is required';
+			errorMsg = 'film stock is required';
 			return;
 		}
 		if (!lens.trim()) {
-			error = 'lens is required';
+			errorMsg = 'lens is required';
 			return;
 		}
 		if (!format) {
-			error = 'format is required';
+			errorMsg = 'format is required';
 			return;
 		}
 		const tagNames = tagsInput
@@ -131,12 +131,12 @@
 			.map((t) => t.trim().toLowerCase().replace(/^#/, ''))
 			.filter((t) => t.length > 0);
 		if (tagNames.length === 0) {
-			error = 'at least one tag is required';
+			errorMsg = 'at least one tag is required';
 			return;
 		}
 
 		loading = true;
-		error = '';
+		errorMsg = '';
 		status = 'resizing...';
 
 		try {
@@ -206,7 +206,7 @@
 
 			goto(`/photo/${photo.id}`);
 		} catch (err: any) {
-			error = err.message || 'something went wrong';
+			errorMsg = err.message || 'something went wrong';
 			loading = false;
 		}
 	}
@@ -290,8 +290,8 @@
 			<input type="text" bind:value={tagsInput} placeholder="comma separated: street, portrait" required />
 		</label>
 
-		{#if error}
-			<p class="error">{error}</p>
+		{#if errorMsg}
+			<p class="error">{errorMsg}</p>
 		{/if}
 
 		<button type="submit" disabled={loading}>

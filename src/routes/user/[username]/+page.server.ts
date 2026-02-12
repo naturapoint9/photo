@@ -25,14 +25,21 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	// fetch photos this user has favorited
 	let favorites: any[] = [];
-	const { data: favRows, error: favErr } = await locals.supabase
+	const { data: likeRows } = await locals.supabase
 		.from('likes')
-		.select('photo_id, photos ( id, image_url, caption, film_stock, created_at, profiles ( username ) )')
+		.select('photo_id')
 		.eq('user_id', profile.id)
 		.order('created_at', { ascending: false });
 
-	if (!favErr) {
-		favorites = (favRows ?? []).map((r: any) => r.photos).filter(Boolean);
+	const photoIds = (likeRows ?? []).map((r) => r.photo_id).filter(Boolean);
+	if (photoIds.length > 0) {
+		const { data: favPhotos } = await locals.supabase
+			.from('photos')
+			.select('id, image_url, caption, film_stock, created_at, profiles!photos_user_id_fkey ( username )')
+			.in('id', photoIds);
+		// preserve order by like date (photoIds order)
+		const orderMap = new Map(photoIds.map((id, i) => [id, i]));
+		favorites = ((favPhotos ?? []) as any[]).sort((a, b) => (orderMap.get(a.id) ?? 0) - (orderMap.get(b.id) ?? 0));
 	}
 
 	// fetch shoutbox messages

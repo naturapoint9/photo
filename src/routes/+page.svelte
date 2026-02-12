@@ -5,15 +5,15 @@
 
 	let { data }: { data: PageData } = $props();
 
-	let photos = $state([...data.photos]);
+	let photos = $state([...(data.photos ?? [])]);
 	let loading = $state(false);
-	let hasMore = $state(data.photos.length === 12);
+	let hasMore = $state((data.photos ?? []).length === 12);
 	let sentinel: HTMLElement;
-
 	// reset when data changes (e.g. filter applied)
 	$effect(() => {
-		photos = [...data.photos];
-		hasMore = data.photos.length === 12;
+		const p = data.photos ?? [];
+		photos = [...p];
+		hasMore = p.length === 12;
 	});
 
 	function buildFilterParams() {
@@ -89,7 +89,7 @@
 	<meta property="og:title" content={activeFilters.length > 0 ? `${activeFilters.join(' + ')} — 36and8` : '36and8'} />
 	<meta property="og:description" content="analog photo sharing" />
 	<meta property="og:url" content={data.canonicalUrl} />
-	{#if data.photos.length > 0}
+	{#if (data.photos ?? []).length > 0}
 		<meta property="og:image" content={data.photos[0].image_url} />
 	{/if}
 </svelte:head>
@@ -104,7 +104,7 @@
 		</div>
 	{/if}
 
-	{#if data.formats.length > 0 || data.cameras.length > 0 || data.films.length > 0 || data.lenses.length > 0 || data.tags.length > 0}
+	{#if (data.formats ?? []).length > 0 || (data.cameras ?? []).length > 0 || (data.films ?? []).length > 0 || (data.lenses ?? []).length > 0 || (data.tags ?? []).length > 0}
 		<div class="filter-tags">
 			{#if data.formats.length > 0}
 				<div class="filter-group">

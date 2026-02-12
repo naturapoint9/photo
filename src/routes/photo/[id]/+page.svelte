@@ -2,6 +2,7 @@
 	import type { PageData, ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
 	import { timeAgo, fullDate } from '$lib/utils';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
@@ -139,7 +140,15 @@
 	{/if}
 
 	<div class="actions-bar">
-		<form method="POST" action="?/favorite" use:enhance>
+		<form
+			method="POST"
+			action="?/favorite"
+			use:enhance={() =>
+				async ({ result }) => {
+					if (result.type === 'success') await invalidateAll();
+				}
+			}
+		>
 			<button type="submit" class="like-btn" class:liked={data.userFavorited}>
 				{data.userFavorited ? '★' : '☆'} {data.favoriteCount}
 			</button>

@@ -33,18 +33,10 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		.from('photos')
 		.select('camera, film_stock, lens, format');
 
-	const cameras = [...new Set((allPhotos ?? []).map((p: any) => p.camera).filter(Boolean))].sort();
-	const films = [...new Set((allPhotos ?? []).map((p: any) => p.film_stock).filter(Boolean))].sort();
-	const lenses = [...new Set((allPhotos ?? []).map((p: any) => p.lens).filter(Boolean))].sort();
-	const formats = [...new Set((allPhotos ?? []).map((p: any) => p.format).filter(Boolean))].sort();
-
-	// fetch user-created tags
-	const { data: allTags } = await locals.supabase
-		.from('tags')
-		.select('name')
-		.order('name');
-
-	const tagNames = (allTags ?? []).map((t: any) => t.name);
+	const cameras = [...new Set((allPhotos ?? []).map((p: { camera?: string }) => p.camera).filter(Boolean))].sort();
+	const films = [...new Set((allPhotos ?? []).map((p: { film_stock?: string }) => p.film_stock).filter(Boolean))].sort();
+	const lenses = [...new Set((allPhotos ?? []).map((p: { lens?: string }) => p.lens).filter(Boolean))].sort();
+	const formats = [...new Set((allPhotos ?? []).map((p: { format?: string }) => p.format).filter(Boolean))].sort();
 
 	const hasFilter = !!(camera || film || lens || format);
 
@@ -54,7 +46,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		films,
 		lenses,
 		formats,
-		tags: tagNames,
+		tags: [] as string[],
 		activeCamera: camera,
 		activeFilm: film,
 		activeLens: lens,
